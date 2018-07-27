@@ -73,7 +73,7 @@ class SimpleTabs extends React.Component {
 
   renderTableRows = (sort) => {
     let rows = [], sortedValue;
-    if(sort === 'asc') {
+    if (sort === 'asc') {
       sortedValue = _.orderBy(this.state.companies, ['totalValue'], ['asc'])
     } else {
       sortedValue = _.orderBy(this.state.companies, ['totalValue'], ['desc'])
@@ -89,7 +89,7 @@ class SimpleTabs extends React.Component {
           <td className="columns-table" >{d.price}</td>
           <td className="columns-table" >{d.totalValue.toLocaleString('en')}</td>
           <td style={{ color: change > 0 ? "green" : "red" }}>{change}</td>
-          <td style={{ color: change > 0 ? "green" : "red" }}>{changedRate}</td>
+          <td style={{ color: change > 0 ? "green" : "red" }}>{changedRate}%</td>
         </tr>
       )
     })
@@ -129,11 +129,29 @@ class SimpleTabs extends React.Component {
     clearInterval(this.interval);
   }
 
-
   render() {
     const { classes } = this.props;
     const { value } = this.state;
-
+    const Table = (props) => {
+      const { sort } = props;
+      return (
+        <Fragment>
+          <table>
+            <thead>
+              <tr>
+                <th>Code</th>
+                <th>Company</th>
+                <th>Price</th>
+                <th>Value</th>
+                <th>Change</th>
+                <th>%Change</th>
+              </tr>
+            </thead>
+            {this.renderTableRows(sort)}
+          </table>
+        </Fragment>
+      )
+    }
     return (
       <div className={classes.root}>
         <AppBar position="static" className={classes.tab}>
@@ -145,38 +163,10 @@ class SimpleTabs extends React.Component {
         </AppBar>
         {value === 0 &&
           <TabContainer>
-            <Fragment>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Code</th>
-                    <th>Company</th>
-                    <th>Price</th>
-                    <th>Value</th>
-                    <th>Change</th>
-                    <th>%Change</th>
-                  </tr>
-                </thead>
-                {this.renderTableRows('desc')}
-              </table>
-            </Fragment>
+            <Table sort={'desc'} />
           </TabContainer>}
         {value === 1 && <TabContainer>
-          <Fragment>
-            <table>
-              <thead>
-                <tr>
-                  <th>Code</th>
-                  <th>Company</th>
-                  <th>Price</th>
-                  <th>Value</th>
-                  <th>Change</th>
-                  <th>%Change</th>
-                </tr>
-              </thead>
-              {this.renderTableRows('asc')}
-            </table>
-          </Fragment>
+          <Table sort={'asc'} />
         </TabContainer>}
       </div>
     );
